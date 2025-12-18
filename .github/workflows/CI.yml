@@ -30,7 +30,7 @@ jobs:
         run: go install github.com/loicsikidi/mdbook-sitemap-generator@latest
 
       - name: Generate sitemap
-        run: mdbook-sitemap-generator --domain rsdocsjp.org --output ./out/sitemap.xml
+        run: mdbook-sitemap-generator --domain rsdocsjp.org --output out/sitemap.xml
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
