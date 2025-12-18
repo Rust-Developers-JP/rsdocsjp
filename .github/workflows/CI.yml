@@ -20,8 +20,17 @@ jobs:
         with:
           mdbook-version: "latest"
 
-      - name: Build
+      - name: Build mdbook
         run: mdbook build --dest-dir out
+
+      - name: Setup Go environment
+        uses: actions/setup-go@v5.6.0
+
+      - name: Install mdbook-sitemap-generator
+        run: go install github.com/loicsikidi/mdbook-sitemap-generator@latest
+
+      - name: Generate sitemap
+        run: mdbook-sitemap-generator --domain rsdocsjp.org --output ./out/sitemap.xml
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
