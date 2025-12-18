@@ -23,7 +23,20 @@ jobs:
       - name: Build mdbook
         run: mdbook build --dest-dir out
 
+      - name: Cache Cargo registry and Cargo bin
+        id: cargo-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock','**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
       - name: Install mdbook-utils
+        if: steps.cargo-cache.outputs.cache-hit != 'true'
         run: cargo install mdbook-utils
 
       - name: Generate sitemap
