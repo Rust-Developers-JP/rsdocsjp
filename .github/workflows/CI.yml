@@ -27,7 +27,7 @@ jobs:
         run: cargo install mdbook-utils
 
       - name: Generate sitemap
-        run: mdbook-utils sitemap -o out/sitemap.xml
+        run: mdbook-utils sitemap -o out/sitemap.xml -b https://rsdocsjp.org/ -y
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
