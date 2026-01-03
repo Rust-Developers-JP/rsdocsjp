@@ -1,9 +1,8 @@
 name: CI
 
 on:
+  pull_request:
   push:
-    branches:
-      - main
 
 permissions:
   contents: read
@@ -41,19 +40,3 @@ jobs:
 
       - name: Generate sitemap
         run: mdbook-utils sitemap -o out/sitemap.xml -b https://rsdocsjp.org/ -y
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: ./out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4

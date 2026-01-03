@@ -1,0 +1,87 @@
+name: Deploy site to Github Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-commit:
+    name: Deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Checkout mdbook
+        uses: peaceiris/actions-mdbook@v2
+        with:
+          mdbook-version: "latest"
+
+      - name: Build mdbook
+        run: mdbook build --dest-dir out
+
+      - name: Cache Cargo registry and Cargo bin
+        id: cargo-cache
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            ~/.cargo/bin
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock','**/Cargo.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install mdbook-utils
+        if: steps.cargo-cache.outputs.cache-hit != 'true'
+        run: cargo install mdbook-utils
+
+      - name: Generate sitemap
+        run: mdbook-utils sitemap -o out/sitemap.xml -b https://rsdocsjp.org/ -y
+
+      - name: Move out directory
+        run: |
+            mkdir -p tmp/out
+            mv out tmp/out
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Preserve specific directories
+        run: |
+            mkdir -p preserve
+            mv out/preview preserve/preview
+
+      - name: Adapt new build
+        run: |
+            mv -f tmp/out out
+            mv -f preserve/preview out/preview
+
+      - name: Clean
+        run: |
+          find . -type f ! -path "./.github/*" ! -path "./out/*" ! -path "./.git/*" -delete
+
+      - name: Commit changes to gh-pages branch
+        run: |
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "action@github.com"
+            git add -N .
+            set +e
+            git diff --exit-code --quiet
+            if [[ $? -eq 1 ]]; then
+                git add .
+                git commit -m "Deploy to gh-pages: ${{ github.sha }}"
+                git push origin gh-pages
+            fi

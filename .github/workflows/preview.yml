@@ -51,7 +51,9 @@ jobs:
         run: mdbook-utils sitemap -o out/sitemap.xml -b https://rsdocsjp.org/ -y
 
       - name: Move out directory
-        run: mv out /tmp/out
+        run: |
+            mkdir -p tmp/out
+            mv -f out tmp/out
 
       - name: Checkout gh-pages
         uses: actions/checkout@v4
@@ -62,8 +64,8 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "action@github.com"
-          mkdir -p /out/preview/${{ env.PAGE_DIR }}
-          mv /tmp/out /out/preview/${{ env.PAGE_DIR }}
+          mkdir -p out/preview/${{ env.PAGE_DIR }}
+          mv tmp/out /out/preview/${{ env.PAGE_DIR }}
           git add .
           git commit -m "Deploy PR preview for #${{ github.event.pull_request.number }}"
           git push origin gh-pages
@@ -90,8 +92,8 @@ jobs:
 
       - name: Remove preview directory
         run: |
-          rm -rf /out/preview/${{ env.PAGE_DIR }} || exit 0
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
+            rm -rf ./out/preview/${{ env.PAGE_DIR }} || exit 0
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add .
             git commit -m "Remove PR preview for #${{ github.event.pull_request.number }}" && git push origin gh-pages || echo "No changes to commit"
