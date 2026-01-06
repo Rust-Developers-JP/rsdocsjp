@@ -15,7 +15,7 @@
 
 - [] ローカルで `mdbook build` を実行して確認した
 - [] modlist.md を更新した（モジュール追加時）
-- [] CONTRIBUTING.md のルールに従っている
+- [] [CONTRIBUTING.md](CONTRIBUTING.md) のルールに従っている
 - [] ライセンス／著作権に問題がない
 
 # レビューで見てほしい点
