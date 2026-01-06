@@ -1,4 +1,4 @@
-# 概要（何を変更したのか）
+# 概要
 
 <!-- 短く端的に記載 -->
 
@@ -7,27 +7,17 @@
 - 変更点 1
 - 変更点 2
 
-# 関連 Issue
+# 関連Issue
 
 <!-- 例: fixes #123 -->
 
-# 動作確認
-
-- ローカルで mdbook build を実行して確認した: `mdbook build` （はい/いいえ）
-- CI が通ること（GitHub Actions）
-
 # チェックリスト
 
-- [ ] mdbook build が通る（`mdbook build`）
-- [ ] modlist.md を更新した（モジュール追加時）
-- [ ] CONTRIBUTING.md のルールに従っている（[CONTRIBUTING.md](CONTRIBUTING.md)）
-- [ ] ライセンス／著作権に問題がない
-- [ ] テスト（必要な場合）を追加／更新した
+- [] ローカルで `mdbook build` を実行して確認した
+- [] modlist.md を更新した（モジュール追加時）
+- [] [CONTRIBUTING.md](CONTRIBUTING.md) のルールに従っている
+- [] ライセンス／著作権に問題がない
 
 # レビューで見てほしい点
 
 <!-- 特に見てほしい箇所や懸念点を記載 -->
-
-# 変更ファイルのハイライト
-
-- 主要な変更ファイルを列挙
