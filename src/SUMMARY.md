@@ -4,8 +4,8 @@
 
 - [モジュール一覧](./modlist.md)
 
-# stdクレート リファレンス
+# リファレンス
 
-- [vec モジュール](./vec/about.md)
-    - [Drain 構造体](./vec/Drain.md)
+- [std::vec](./vec/about.md)
+    - [Drain](./vec/Drain.md)
 
