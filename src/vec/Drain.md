@@ -206,7 +206,7 @@ where
 { /* trait methods */ }
 ```
 
-### `Interator`
+### `Iterator`
 
 ```rust,ignore
 impl<T, A> Iterator for Drain<'_, T, A>
