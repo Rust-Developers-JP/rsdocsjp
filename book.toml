@@ -1,7 +1,7 @@
 [book]
 title = "rsdocsjp"
 authors = ["KaiTomotake"]
-description = "Rust言語非公式日本語解説"
+description = "Rust言語非公式日本語ドキュメント"
 
 [build]
 create-missing = false
