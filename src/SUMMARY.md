@@ -8,4 +8,4 @@
 
 - [std::vec](./vec/about.md)
     - [Drain](./vec/Drain.md)
-
+    - [IntoIter](./vec/IntoIter.md)
