@@ -7,6 +7,7 @@
 # リファレンス
 
 - [std::any](./any/about.md)
+    - [TypeId](./any/TypeId.md)
 - [std::vec](./vec/about.md)
     - [Drain](./vec/Drain.md)
 
