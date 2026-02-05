@@ -10,3 +10,6 @@
 - [std::vec](./vec/about.md)
     - [Drain](./vec/Drain.md)
 
+# 貢献
+
+- [貢献について](./contribute.md)
