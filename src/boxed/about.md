@@ -129,5 +129,5 @@ for item in IntoIterator::into_iter(boxed_slice).enumerate() {
 
 | 名前                                                                              | 説明                                     |
 | --------------------------------------------------------------------------------- | ---------------------------------------- |
-| [Box](https://doc.rust-lang.org/std/boxed/struct.Box.html)                        | T 型のヒープを一意に所有するポインター型 |
+| [Box](https://doc.rust-lang.org/std/boxed/struct.Box.html)                        | ヒープに配置された T 型を一意に所有するポインター型 |
 | [ThinBox](https://doc.rust-lang.org/std/boxed/struct.ThinBox.html) (Experimental) | 薄い Box                                 |
