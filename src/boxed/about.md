@@ -26,7 +26,7 @@ let boxed: Box<u8> = Box::new(5);
 let val: u8 = *boxed;
 ```
 
-再帰構造の作成：
+再帰データ構造の作成：
 
 ```rust
 #[derive(Debug)]
