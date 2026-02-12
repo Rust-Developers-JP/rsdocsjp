@@ -6,7 +6,7 @@ Rust 1.0.0 ~
 
 ## 概要
 
-`Box<T>`はヒープアロケーションに分類される。
+`Box<T>`はヒープアロケーションのための型である。
 
 [`Box<T>`](https://doc.rust-lang.org/std/boxed/struct.Box.html)(単に ‘Box’ と呼ばれることもある)はRustにおいて一番単純なヒープアロケーションである。Boxはこのアロケーションの所有権を有し、スコープから外れる時に中身を破棄する。加えて、ヒープの割り当てが`isize::MAX`バイトを超えないことも保証する。
 
@@ -59,12 +59,12 @@ Cons(T, List<T>),
 `T: Sized`である限り`Box<T>`は単一のポインターであることを保証するとともにCのポインター(CのT*型)とのABI互換性を持つ。これはRustでCから呼び出す関数を作成する際に`Box<T>`で定義したものがCでは`T*`になるという意味である。例として`Foo`の作成と破棄を行う関数を宣言するCのヘッダーを示す：
 
 ```C
-/* C header */
+/* C ヘッダー */
 
-/* Returns ownership to the caller */
+/* 呼び出し元への所有権の返却 */
 struct Foo* foo_new(void);
 
-/* Takes ownership from the caller; no-op when invoked with null */
+/* 呼び出し元から所有権を取得; ヌルの場合何もしない */
 void foo_delete(struct Foo*);
 ```
 
