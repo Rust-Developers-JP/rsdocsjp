@@ -46,7 +46,7 @@ println!("{list:?}");
 Cons(T, List<T>),
 ```
 
-なぜなら`List`のサイズはリスト内にどれだけのリストがあるかにより、このままでは`Cons`に対するスタックの割り当て量を把握できないためである。サイズが決まっている[`Box<T>`](https://doc.rust-lang.org/std/boxed/struct.Box.html)の導入により、`Cons`に必要なスタックサイズが把握できるようになる。
+なぜなら`List`のサイズはリスト内にどれだけのリストがあるかにより、このままでは`Cons`に対するスタックの割り当て量を把握できないためである。サイズが決まっている[`Box<T>`](https://doc.rust-lang.org/std/boxed/struct.Box.html)を用いることで、`Cons`に必要なスタックサイズが把握できるようになる。
 
 ## メモリーレイアウト
 
