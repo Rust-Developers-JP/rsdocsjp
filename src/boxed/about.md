@@ -68,7 +68,7 @@ struct Foo* foo_new(void);
 void foo_delete(struct Foo*);
 ```
 
-この2つの関数はRustで下記のように実装できる。ここでは`struct Foo*`型に変換された`Box<Foo>`は所有権の制約を補足する。`Box<Foo>`が非ヌルであるため引数がヌルになる可能性のある`foo_delete`の引数はRustでは`Option<Box<Foo>>`になることに注意しなければならない。
+この2つの関数はRustで下記のように実装できる。ここでは`struct Foo*`型に変換された`Box<Foo>`は所有権の制約を補足する。`Box<Foo>`が非ヌルであるため、引数がヌルになる可能性のある`foo_delete`の引数はRustでは`Option<Box<Foo>>`になることに注意しなければならない。
 
 ```rust
 #[repr(C)]
