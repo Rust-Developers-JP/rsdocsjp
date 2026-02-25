@@ -16,6 +16,9 @@ rsdocsjpは、Rust標準ライブラリおよび関連仕様について、公�
 本サイトはよりわかりやすくするために、コードブロックではフルパスを書くようにしています。
 ただし、以下の構造体・トレイトなどは除外されます。
 
+<details>
+<summary>除外される構造体・トレイトの一覧</summary>
+
 - `std::marker::Copy`
 - `std::marker::Copy` (deriveマクロ)
 - `std::marker::Send`
@@ -86,6 +89,8 @@ rsdocsjpは、Rust標準ライブラリおよび関連仕様について、公�
 - `std::concat_bytes` (nightlyのみ)
 - `std::future::Future`
 - `std::future::IntoFuture`
+
+</details>
 
 フルを書かないパスは`std::prelude::rust_2024`に基づいています。
 
