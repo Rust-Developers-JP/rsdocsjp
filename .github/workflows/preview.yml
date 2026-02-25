@@ -1,0 +1,75 @@
+name: Deploy PR previews
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  PAGE_DIR: pr-preview-${{ github.event.pull_request.number }}
+
+jobs:
+  build-and-commit:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Check
+        uses: ./.github/workflows/build
+
+      - name: Move out directory
+        run: |
+            mkdir -p tmp/out
+            mv -f out tmp/out
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Commit changes to gh-pages branch
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "action@github.com"
+          mkdir -p out/preview/${{ env.PAGE_DIR }}
+          mv tmp/out /out/preview/${{ env.PAGE_DIR }}
+          git add .
+          git commit -m "Deploy PR preview for #${{ github.event.pull_request.number }}"
+          git push origin gh-pages
+
+      - name: Comment PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Preview deployed to: https://${context.repo.owner}.github.io/preview/${process.env.PAGE_DIR}`
+            })
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Remove preview directory
+        run: |
+            rm -rf ./out/preview/${{ env.PAGE_DIR }} || exit 0
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git add .
+            git commit -m "Remove PR preview for #${{ github.event.pull_request.number }}" && git push origin gh-pages || echo "No changes to commit"

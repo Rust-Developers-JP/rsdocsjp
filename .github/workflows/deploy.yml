@@ -1,0 +1,63 @@
+name: Deploy site to Github Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build-and-commit:
+    name: Deploy
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Build Check
+        uses: ./.github/workflows/build
+
+      - name: Move out directory
+        run: |
+            mkdir -p tmp/out
+            mv out tmp/out
+
+      - name: Checkout gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Preserve specific directories
+        run: |
+            mkdir -p preserve
+            mv out/preview preserve/preview
+
+      - name: Adapt new build
+        run: |
+            mv -f tmp/out out
+            mv -f preserve/preview out/preview
+
+      - name: Clean
+        run: |
+          find . -type f ! -path "./.github/*" ! -path "./out/*" ! -path "./.git/*" -delete
+
+      - name: Commit changes to gh-pages branch
+        run: |
+            git config --global user.name "GitHub Actions"
+            git config --global user.email "action@github.com"
+            git add -N .
+            set +e
+            git diff --exit-code --quiet
+            if [[ $? -eq 1 ]]; then
+                git add .
+                git commit -m "Deploy to gh-pages: ${{ github.sha }}"
+                git push origin gh-pages
+            fi
