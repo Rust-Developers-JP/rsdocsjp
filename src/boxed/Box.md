@@ -155,7 +155,7 @@ impl<T> Box<T>
 pub fn new(x: T) -> Box<T>
 ```
 ヒープ領域にメモリーを割り当て`x`を格納する。
-`T`がゼロサイズの場合、実際にはメモリーは割り当てられない。
+`T`がゼロサイズ型の場合、実際にはメモリーは割り当てられない。
 
 ```rust
 let five = Box::new(5);
@@ -169,7 +169,7 @@ let five = Box::new(5);
 pub fn new_uninit() -> Box<MaybeUninit<T>>
 ```
 
-ヒープ上の中身を初期化せずに新しいboxを作成する。
+中身を初期化せずに新しいboxを作成する。
 
 ```rust
 let mut five = Box::<u32>::new_uninit();
@@ -188,7 +188,7 @@ assert_eq!(*five, 5)
 pub fn new_zeroed() -> Box<MaybeUninit<T>>
 ```
 
-初期化せずに新しいboxを作成し、中身を0バイトで埋める。
+中身を初期化せずに新しいboxを作成し、中身を0バイトで埋める。
 このメソッドの正しい使用例と誤った使用例は[`MaybeUninit::zeroed`](https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#method.zeroed)を参照。
 
 ```rust
@@ -218,8 +218,8 @@ pub fn pin(x: T) -> Pin<Box<T>>
 pub fn try_new(x: T) -> Result<Box<T>, AllocError>
 ```
 
-ヒープにメモリーを割り当ててから`x`を格納する。割り当てに失敗した場合はエラーを返す。
-`T`がゼロサイズの場合、実際にはメモリーは割り当てられない。
+ヒープにメモリーを割り当ててから`x`を格納し、割り当てに失敗した場合エラーを返す。
+`T`がゼロサイズ型の場合、実際にはメモリーは割り当てられない。
 
 ```rust
 #![feature(allocator_api)]
@@ -236,7 +236,7 @@ let five = Box::try_new(5)?;
 pub fn try_new_uninit() -> Result<Box<MaybeUninit<T>>, AllocError>
 ```
 
-ヒープ上の中身を初期化せずに新しいboxを作成する。割り当てに失敗した場合はエラーを返す。
+中身を初期化せずに新しいboxを作成し、割り当てに失敗した場合エラーを返す。
 
 ```rust
 #![feature(allocator_api)]
@@ -249,7 +249,7 @@ let five = unsafe { five.assume_init() };
 assert_eq!(*five, 5);
 ```
 
-### try_new_zeroed
+### `try_new_zeroed`
 
 > [!NOTE]
 > nightlyでのみ使用可能
@@ -258,7 +258,7 @@ assert_eq!(*five, 5);
 pub fn try_new_zeroed() -> Result<Box<MaybeUninit<T>>, AllocError>
 ```
 
-初期化せずに新しいboxを作成し、中身を0バイトで埋める。
+中身を初期化せずに新しいboxを作成し、ヒープ上のメモリーを0バイトで埋める。割り当てに失敗した場合エラーを返す。
 このメソッドの正しい使用例と誤った使用例は[`MaybeUninit::zeroed`](https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#method.zeroed)を参照。
 
 ```rust
@@ -270,7 +270,7 @@ let zero = unsafe { zero.assume_init() };
 assert_eq!(*zero, 0);
 ```
 
-### map
+### `map`
 
 > [!NOTE]
 > nightlyでのみ使用可能
@@ -291,7 +291,7 @@ let new = Box::map(b, |i| i + 7);
 assert_eq!(*new, 14);
 ```
 
-### try_map
+### `try_map`
 
 > [!NOTE]
 > nightlyでのみ使用可能
@@ -324,7 +324,7 @@ where
     A: Allocator,
 ```
 
-### new_in
+### `new_in`
 
 > [!NOTE]
 > nightlyでのみ使用可能
@@ -336,7 +336,7 @@ where
 ```
 
 与えられたアロケーターからメモリーを割り当て`x`を格納する。
-`T`がゼロサイズの場合、実際にはメモリーは割り当てられない。
+`T`がゼロサイズ型の場合、実際にはメモリーは割り当てられない。
 
 ```rust
 #![feature(allocator_api)]
@@ -344,4 +344,200 @@ where
 use std::alloc::System;
 
 let five = Box::new_in(5, System);
+```
+
+### `try_new_in`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn try_new_in(x: T, alloc: A) -> Result<Box<T, A>, AllocError>
+where
+    A: Allocator,
+```
+
+与えられたアロケーターからメモリーを割り当て`x`を格納し、割り当てに失敗した場合エラーを返す。
+`T`がゼロサイズ型の場合、実際にはメモリーは割り当てられない。
+
+```rust
+#![feature(allocator_api)]
+
+use std::alloc::System;
+
+let five = Box::try_new_in(5, System)?;
+```
+
+### `new_uninit_in`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn new_uninit_in(alloc: A) -> Box<MaybeUninit<T>, A>
+where
+    A: Allocator,
+```
+
+与えられたアロケーターから中身を初期化せずに新しいboxを作成する。
+
+```rust
+#![feature(allocator_api)]
+
+use std::alloc::System;
+
+let mut five = Box::<u32, _>::new_uninit_in(System);
+// Deferred initialization:
+five.write(5);
+let five = unsafe { five.assume_init() };
+
+assert_eq!(*five, 5)
+```
+
+### `try_new_uninit_in`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn try_new_uninit_in(alloc: A) -> Result<Box<MaybeUninit<T>, A>, AllocError>
+where
+    A: Allocator,
+```
+
+与えられたアロケーターから中身を初期化せずに新しいboxを作成し、割り当てに失敗した場合エラーを返す。
+
+```rust
+#![feature(allocator_api)]
+
+use std::alloc::System;
+
+let mut five = Box::<u32, _>::try_new_uninit_in(System)?;
+// 遅延初期化:
+five.write(5);
+let five = unsafe { five.assume_init() };
+
+assert_eq!(*five, 5);
+```
+
+### `new_zeroed_in`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn new_zeroed_in(alloc: A) -> Box<MaybeUninit<T>, A>
+where
+    A: Allocator,
+```
+
+与えられたアロケーターから中身を初期化せずに新しいboxを作成し、ヒープ上のメモリーを0バイトで埋める。割り当てに失敗した場合エラーを返す。
+このメソッドの正しい使用例と誤った使用例は[`MaybeUninit::zeroed`](https://doc.rust-lang.org/std/mem/union.MaybeUninit.html#method.zeroed)を参照。
+
+```rust
+#![feature(allocator_api)]
+
+use std::alloc::System;
+
+let zero = Box::<u32, _>::try_new_zeroed_in(System)?;
+let zero = unsafe { zero.assume_init() };
+
+assert_eq!(*zero, 0);
+```
+
+### `pin_in`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn pin_in(x: T, alloc: A) -> Pin<Box<T, A>>
+where
+    A: 'static + Allocator,
+```
+
+新しい`Pin<Box<T, A>>`を作成する。`T`が[`Unpin`](https://doc.rust-lang.org/std/marker/trait.Unpin.html)を実装していない場合、`x`はメモリー上に固定され動かせなくなる。
+`Box`の作成と固定は2段階でも行え、`Box::pin_in(x, alloc)`は`Box::into_pin(Box::new_in(x, alloc))`と同じである。すでに`Box<T, A>`がある場合や、[`Box::new_in`](#new_in)とは違った方法で(固定した)`Box`を作成したい場合は[`into_pin`](https://doc.rust-lang.org/std/boxed/struct.Box.html#method.into_pin)の使用を検討するとよい。
+
+### `into_boxed_slice`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn into_boxed_slice(boxed: Box<T, A>) -> Box<[T], A>
+```
+
+`Box<T>`を`Box<[T]>`へ変換する。
+変換にあたってヒープの割り当てはされずその場所で行われる。
+
+### `into_inner`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn into_inner(boxed: Box<T, A>) -> T
+```
+
+`Box`を消費して中身の値を返す。
+
+```rust
+#![feature(box_into_inner)]
+
+let c = Box::new(5);
+
+assert_eq!(Box::into_inner(c), 5);
+```
+
+### `take`
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn take(boxed: Box<T, A>) -> (T, Box<MaybeUninit<T>, A>)
+```
+
+メモリーの割り当てを消費せずに`Box`を消費し、中身の値と値が入っていた領域が未初期化の状態の`Box`を返す。
+[`write`](#write)とともに使用することでboxと割り当てを再利用することができる。
+
+
+```rust
+#![feature(box_take)]
+
+let c = Box::new(5);
+
+// boxから値を取り出す
+let (value, uninit) = Box::take(c);
+assert_eq!(value, 5);
+
+// 別の値のためにboxを再利用する
+let c = Box::write(uninit, 6);
+assert_eq!(*c, 6);
+```
+
+
+```rust
+impl<T> Box<T>
+where
+    T: CloneToUninit + ?Sized,
+```
+
+### clone_from_ref
+
+> [!NOTE]
+> nightlyでのみ使用可能
+
+```rust
+pub fn clone_from_ref(src: &T) -> Box<T>
+```
+
+ヒープ上にメモリーを割り当て複製した`src`を格納する。
+`src`がゼロサイズの場合、実際にはメモリーは割り当てられない。
+
+```rust
+#![feature(clone_from_ref)]
+
+let hello: Box<str> = Box::clone_from_ref("hello");
 ```
